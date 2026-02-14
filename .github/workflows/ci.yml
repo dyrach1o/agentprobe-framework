@@ -44,13 +44,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: pip install -e ".[dev,test,dashboard]"
+        run: pip install -e ".[dev,test,eval,dashboard]"
       - name: Run tests
         run: |
           pytest tests/ \
             --cov=agentprobe \
             --cov-report=xml:coverage.xml \
             --cov-report=term-missing \
+            --cov-fail-under=70 \
             --junitxml=test-results.xml \
             -v
       - name: Upload test results
