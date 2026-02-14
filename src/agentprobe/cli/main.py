@@ -20,7 +20,7 @@ from agentprobe.cli.commands.trace import trace_group
 
 
 @click.group()
-@click.version_option(package_name="agentprobe")
+@click.version_option(package_name="agentprobe-framework")
 def cli() -> None:
     """AgentProbe — a testing and evaluation framework for software agents."""
 
