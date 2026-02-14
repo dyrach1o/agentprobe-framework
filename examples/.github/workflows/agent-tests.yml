@@ -1,0 +1,53 @@
+name: Agent Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install agentprobe-framework pytest pytest-cov
+
+      - name: Run AgentProbe tests
+        env:
+          # API Keys stored as repository secrets
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          # Path for traces database
+          AGENTPROBE_DB_PATH: traces.db
+        run: |
+          pytest tests/ \
+            --agentprobe-store-traces \
+            --cov=src \
+            --cov-report=xml \
+            --junitxml=test-results.xml
+
+      - name: Verify budget
+        # Enforce a cost safety limit in CI
+        run: agentprobe cost budget --max-cost 5.00
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentprobe-results
+          path: |
+            test-results.xml
+            coverage.xml
+            traces.db
