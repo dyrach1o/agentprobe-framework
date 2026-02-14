@@ -27,7 +27,7 @@ def _create_token_handler() -> Any | None:
     except ImportError:
         return None
 
-    class _TokenHandler(BaseCallbackHandler):
+    class _TokenHandler(BaseCallbackHandler):  # type: ignore[misc]
         """Callback handler that accumulates token usage across LLM calls."""
 
         def __init__(self) -> None:
@@ -68,9 +68,9 @@ def _create_token_handler() -> Any | None:
                 if isinstance(llm_output, dict):
                     usage = llm_output.get("usage", llm_output.get("token_usage", {}))
                     if isinstance(usage, dict):
-                        input_tokens = int(usage.get("input_tokens", usage.get("prompt_tokens", 0)))
+                        input_tokens = int(usage.get("input_tokens", usage.get("prompt_tokens", 0)))  # type: ignore[arg-type]
                         output_tokens = int(
-                            usage.get("output_tokens", usage.get("completion_tokens", 0))
+                            usage.get("output_tokens", usage.get("completion_tokens", 0))  # type: ignore[arg-type]
                         )
 
             self.total_input_tokens += input_tokens
