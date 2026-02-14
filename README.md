@@ -10,17 +10,9 @@
 
 AgentProbe gives you the tools to test autonomous software agents the same way you'd test any critical software --- with structured assertions, regression detection, safety scans, cost tracking, and full execution tracing. If your agent calls tools, makes decisions, or produces non-deterministic output, AgentProbe helps you verify it works correctly and keeps working.
 
-```
-$ agentprobe test -d tests/
-
-  [PASS] test_greeting ............. score=1.00  42ms
-  [PASS] test_tool_usage ........... score=0.95 180ms
-  [FAIL] test_cost_limit ........... score=0.60 220ms
-  [PASS] test_no_data_leakage ..... score=1.00  95ms
-
-  4 tests | 3 passed | 1 failed | 537ms total
-  Cost: $0.0042 | Budget: $0.01 (42% used)
-```
+<p align="center">
+  <img src="assets/demo-test.svg" alt="agentprobe test" width="700">
+</p>
 
 ---
 
@@ -43,6 +35,10 @@ pip install agentprobe-framework[dashboard]    # REST API dashboard (FastAPI)
 ### pytest Plugin (Recommended)
 
 AgentProbe ships as a native pytest plugin. Install it and the `agentprobe` fixture is automatically available:
+
+<p align="center">
+  <img src="assets/demo-pytest.svg" alt="pytest with agentprobe" width="700">
+</p>
 
 ```python
 # test_my_agent.py
@@ -68,6 +64,10 @@ pytest tests/ -v
 ```
 
 ### Standalone CLI
+
+<p align="center">
+  <img src="assets/demo-init.svg" alt="agentprobe init" width="700">
+</p>
 
 ```bash
 agentprobe init          # create agentprobe.yaml
@@ -172,6 +172,10 @@ check = enforcer.check_test(summary)
 ```
 
 ### Safety Scanning
+
+<p align="center">
+  <img src="assets/demo-safety.svg" alt="agentprobe safety scan" width="700">
+</p>
 
 Run built-in suites that probe for common agent vulnerabilities:
 

@@ -1,0 +1,46 @@
+<svg viewBox="0 0 720 337" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .term-bg { fill: #282c34; }
+    .titlebar { fill: #21252b; }
+    .title-text { fill: #5c6370; font-family: 'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace; font-size: 13px; }
+    .line { opacity: 0; animation: fadeIn 0.35s ease-out forwards; }
+    .l0 { animation-delay: 0.30s; }
+    .l1 { animation-delay: 0.60s; }
+    .l2 { animation-delay: 0.90s; }
+    .l3 { animation-delay: 1.20s; }
+    .l4 { animation-delay: 1.50s; }
+    .l5 { animation-delay: 1.80s; }
+    .l6 { animation-delay: 2.10s; }
+    .l7 { animation-delay: 2.40s; }
+    .l8 { animation-delay: 2.70s; }
+    .l9 { animation-delay: 3.00s; }
+    .l10 { animation-delay: 3.30s; }
+    .l11 { animation-delay: 3.60s; }
+    .l12 { animation-delay: 3.90s; }
+  </style>
+
+  <!-- Terminal frame -->
+  <rect class="term-bg" width="720" height="337" rx="8"/>
+  <rect class="titlebar" width="720" height="36" rx="8"/>
+  <rect class="titlebar" y="28" width="720" height="8"/>
+  <circle cx="20" cy="18" r="6" fill="#ff5f56"/>
+  <circle cx="38" cy="18" r="6" fill="#ffbd2e"/>
+  <circle cx="56" cy="18" r="6" fill="#27c93f"/>
+  <text class="title-text" x="360" y="22" text-anchor="middle">agentprobe test</text>
+
+  <!-- Content -->
+    <g class="line l0"><text x="16" y="69" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#98c379" font-weight="bold">&gt; agentprobe test -d tests/</tspan></text></g>
+    <g class="line l1"><text x="16" y="90" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"></text></g>
+    <g class="line l2"><text x="16" y="111" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#56b6c2" font-weight="bold">AgentProbe v1.0.1</tspan><tspan fill="#5c6370" font-weight="normal">  — Running 6 test scenarios...</tspan></text></g>
+    <g class="line l3"><text x="16" y="132" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"></text></g>
+    <g class="line l4"><text x="16" y="153" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#98c379" font-weight="bold">  [PASS] </tspan><tspan fill="#e5e5e5" font-weight="normal">test_greeting </tspan><tspan fill="#5c6370" font-weight="normal">......................... </tspan><tspan fill="#56b6c2" font-weight="normal">score=1.00</tspan><tspan fill="#5c6370" font-weight="normal">   42ms</tspan><tspan fill="#e5c07b" font-weight="normal">  $0.0008</tspan></text></g>
+    <g class="line l5"><text x="16" y="174" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#98c379" font-weight="bold">  [PASS] </tspan><tspan fill="#e5e5e5" font-weight="normal">test_tool_usage </tspan><tspan fill="#5c6370" font-weight="normal">....................... </tspan><tspan fill="#56b6c2" font-weight="normal">score=0.95</tspan><tspan fill="#5c6370" font-weight="normal">  180ms</tspan><tspan fill="#e5c07b" font-weight="normal">  $0.0012</tspan></text></g>
+    <g class="line l6"><text x="16" y="195" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#98c379" font-weight="bold">  [PASS] </tspan><tspan fill="#e5e5e5" font-weight="normal">test_json_output </tspan><tspan fill="#5c6370" font-weight="normal">...................... </tspan><tspan fill="#56b6c2" font-weight="normal">score=1.00</tspan><tspan fill="#5c6370" font-weight="normal">   95ms</tspan><tspan fill="#e5c07b" font-weight="normal">  $0.0006</tspan></text></g>
+    <g class="line l7"><text x="16" y="216" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#e06c75" font-weight="bold">  [FAIL] </tspan><tspan fill="#e5e5e5" font-weight="normal">test_cost_limit </tspan><tspan fill="#5c6370" font-weight="normal">....................... </tspan><tspan fill="#56b6c2" font-weight="normal">score=0.60</tspan><tspan fill="#5c6370" font-weight="normal">  220ms</tspan><tspan fill="#e5c07b" font-weight="normal">  $0.0031</tspan></text></g>
+    <g class="line l8"><text x="16" y="237" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#98c379" font-weight="bold">  [PASS] </tspan><tspan fill="#e5e5e5" font-weight="normal">test_no_data_leakage </tspan><tspan fill="#5c6370" font-weight="normal">................... </tspan><tspan fill="#56b6c2" font-weight="normal">score=1.00</tspan><tspan fill="#5c6370" font-weight="normal">  110ms</tspan><tspan fill="#e5c07b" font-weight="normal">  $0.0009</tspan></text></g>
+    <g class="line l9"><text x="16" y="258" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#98c379" font-weight="bold">  [PASS] </tspan><tspan fill="#e5e5e5" font-weight="normal">test_multi_turn </tspan><tspan fill="#5c6370" font-weight="normal">....................... </tspan><tspan fill="#56b6c2" font-weight="normal">score=0.92</tspan><tspan fill="#5c6370" font-weight="normal">  340ms</tspan><tspan fill="#e5c07b" font-weight="normal">  $0.0018</tspan></text></g>
+    <g class="line l10"><text x="16" y="279" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"></text></g>
+    <g class="line l11"><text x="16" y="300" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#e5e5e5" font-weight="bold">  6 tests</tspan><tspan fill="#5c6370" font-weight="normal"> | </tspan><tspan fill="#98c379" font-weight="bold">5 passed</tspan><tspan fill="#5c6370" font-weight="normal"> | </tspan><tspan fill="#e06c75" font-weight="bold">1 failed</tspan><tspan fill="#5c6370" font-weight="normal"> | </tspan><tspan fill="#5c6370" font-weight="normal">987ms total</tspan></text></g>
+    <g class="line l12"><text x="16" y="321" font-family="'JetBrains Mono','Fira Code','Cascadia Code','SF Mono','Menlo','Consolas',monospace" font-size="14px"><tspan fill="#5c6370" font-weight="normal">  Cost: </tspan><tspan fill="#e5c07b" font-weight="bold">$0.0084</tspan><tspan fill="#5c6370" font-weight="normal"> | Budget: $0.05 (16.8% used)</tspan></text></g>
+</svg>
