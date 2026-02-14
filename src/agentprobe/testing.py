@@ -62,10 +62,7 @@ class TraceAssertion:
             AssertionError: If the substring is not found.
         """
         if substring not in self._trace.output_text:
-            msg = (
-                f"Expected output to contain {substring!r}, "
-                f"but got: {self._trace.output_text!r}"
-            )
+            msg = f"Expected output to contain {substring!r}, but got: {self._trace.output_text!r}"
             raise AssertionError(msg)
         return self
 
@@ -276,10 +273,7 @@ def assert_cost(
     summary = calc.calculate_trace_cost(trace)
 
     if summary.total_cost_usd > max_usd:
-        msg = (
-            f"Expected cost <= ${max_usd:.6f}, "
-            f"but actual cost is ${summary.total_cost_usd:.6f}"
-        )
+        msg = f"Expected cost <= ${max_usd:.6f}, but actual cost is ${summary.total_cost_usd:.6f}"
         raise AssertionError(msg)
 
     return summary

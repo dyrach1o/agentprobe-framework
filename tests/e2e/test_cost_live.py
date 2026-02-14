@@ -85,9 +85,11 @@ class TestLiveCost:
         )
         adapter = LangChainAdapter(chain, model_name=model_name)
 
-        evaluator = RuleBasedEvaluator(rules=[
-            RuleSpec(rule_type="max_length", params={"max": 3000}),
-        ])
+        evaluator = RuleBasedEvaluator(
+            rules=[
+                RuleSpec(rule_type="max_length", params={"max": 3000}),
+            ]
+        )
         runner = TestRunner(evaluators=[evaluator])
         test_cases = [
             TestCase(name="cost-test-1", input_text="What is the capital of France?"),

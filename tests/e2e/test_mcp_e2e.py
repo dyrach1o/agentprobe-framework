@@ -116,9 +116,11 @@ class TestMCPE2E:
 
     async def test_mcp_with_runner(self, mcp_adapter: MCPAdapter) -> None:
         """Full TestRunner pipeline with RuleBasedEvaluator."""
-        evaluator = RuleBasedEvaluator(rules=[
-            RuleSpec(rule_type="max_length", params={"max": 5000}),
-        ])
+        evaluator = RuleBasedEvaluator(
+            rules=[
+                RuleSpec(rule_type="max_length", params={"max": 5000}),
+            ]
+        )
         runner = TestRunner(evaluators=[evaluator])
         test_case = TestCase(
             name="mcp-e2e-eval",
@@ -137,9 +139,7 @@ class TestMCPE2E:
         assert result.trace is not None
         assert len(result.trace.tool_calls) == 1
 
-    async def test_mcp_store_and_retrieve(
-        self, mcp_adapter: MCPAdapter, tmp_path: Path
-    ) -> None:
+    async def test_mcp_store_and_retrieve(self, mcp_adapter: MCPAdapter, tmp_path: Path) -> None:
         """Store MCP trace in SQLite and verify retrieval."""
         from agentprobe.storage.sqlite import SQLiteStorage
 

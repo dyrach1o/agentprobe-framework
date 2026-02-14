@@ -43,9 +43,11 @@ class TestSystemE2E:
         server = _MockMCPServer()
         adapter = MCPAdapter(server, model_name="mock-model")
 
-        evaluator = RuleBasedEvaluator(rules=[
-            RuleSpec(rule_type="max_length", params={"max": 5000}),
-        ])
+        evaluator = RuleBasedEvaluator(
+            rules=[
+                RuleSpec(rule_type="max_length", params={"max": 5000}),
+            ]
+        )
         runner = TestRunner(evaluators=[evaluator])
         test_cases = [
             TestCase(name="system-test-1", input_text="query data"),
@@ -107,9 +109,11 @@ class TestSystemE2E:
         server = _MockMCPServer()
         adapter = MCPAdapter(server, model_name="mock-model")
 
-        evaluator = RuleBasedEvaluator(rules=[
-            RuleSpec(rule_type="max_length", params={"max": 5000}),
-        ])
+        evaluator = RuleBasedEvaluator(
+            rules=[
+                RuleSpec(rule_type="max_length", params={"max": 5000}),
+            ]
+        )
         runner = TestRunner(evaluators=[evaluator])
         test_cases = [
             TestCase(name="report-test-1", input_text="data query"),
@@ -168,9 +172,11 @@ class TestSystemE2EWithLangChain:
         )
         adapter = LangChainAdapter(chain, model_name=model_name)
 
-        evaluator = RuleBasedEvaluator(rules=[
-            RuleSpec(rule_type="max_length", params={"max": 5000}),
-        ])
+        evaluator = RuleBasedEvaluator(
+            rules=[
+                RuleSpec(rule_type="max_length", params={"max": 5000}),
+            ]
+        )
         runner = TestRunner(evaluators=[evaluator])
         test_case = TestCase(name="system-langchain", input_text="Say hello briefly.")
 

@@ -26,7 +26,9 @@ def _build_chain(api_key: str, model_name: str) -> object:
     from langchain_core.runnables import RunnableLambda
 
     llm = ChatAnthropic(model=model_name, api_key=api_key, max_tokens=256)
-    chain = RunnableLambda(lambda x: x["input"]) | llm | RunnableLambda(lambda msg: str(msg.content))
+    chain = (
+        RunnableLambda(lambda x: x["input"]) | llm | RunnableLambda(lambda msg: str(msg.content))
+    )
     return chain
 
 
@@ -67,9 +69,11 @@ class TestLangChainE2E:
         chain = _build_chain(api_key, model_name)
         adapter = LangChainAdapter(chain, model_name=model_name)
 
-        evaluator = RuleBasedEvaluator(rules=[
-            RuleSpec(rule_type="max_length", params={"max": 5000}),
-        ])
+        evaluator = RuleBasedEvaluator(
+            rules=[
+                RuleSpec(rule_type="max_length", params={"max": 5000}),
+            ]
+        )
         runner = TestRunner(evaluators=[evaluator])
         test_case = TestCase(name="langchain-e2e-eval", input_text="Say hello.")
 

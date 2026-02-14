@@ -80,9 +80,11 @@ class TestAutoGenE2E:
         assistant, user_proxy = _build_agents(api_key, model_name)
         adapter = AutoGenAdapter(assistant, user_proxy, model_name=model_name)
 
-        evaluator = RuleBasedEvaluator(rules=[
-            RuleSpec(rule_type="max_length", params={"max": 5000}),
-        ])
+        evaluator = RuleBasedEvaluator(
+            rules=[
+                RuleSpec(rule_type="max_length", params={"max": 5000}),
+            ]
+        )
         runner = TestRunner(evaluators=[evaluator])
         test_case = TestCase(name="autogen-e2e-eval", input_text="Say hi.")
 

@@ -76,9 +76,11 @@ class TestCrewAIE2E:
         crew = _build_crew(model_name)
         adapter = CrewAIAdapter(crew, model_name=model_name)
 
-        evaluator = RuleBasedEvaluator(rules=[
-            RuleSpec(rule_type="max_length", params={"max": 5000}),
-        ])
+        evaluator = RuleBasedEvaluator(
+            rules=[
+                RuleSpec(rule_type="max_length", params={"max": 5000}),
+            ]
+        )
         runner = TestRunner(evaluators=[evaluator])
         test_case = TestCase(name="crewai-e2e-eval", input_text="Say hello.")
 

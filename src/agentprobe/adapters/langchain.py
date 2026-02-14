@@ -68,9 +68,7 @@ def _create_token_handler() -> Any | None:
                 if isinstance(llm_output, dict):
                     usage = llm_output.get("usage", llm_output.get("token_usage", {}))
                     if isinstance(usage, dict):
-                        input_tokens = int(
-                            usage.get("input_tokens", usage.get("prompt_tokens", 0))
-                        )
+                        input_tokens = int(usage.get("input_tokens", usage.get("prompt_tokens", 0)))
                         output_tokens = int(
                             usage.get("output_tokens", usage.get("completion_tokens", 0))
                         )
@@ -141,9 +139,7 @@ class LangChainAdapter(BaseAdapter):
                     {"input": input_text}, config=invoke_config, **kwargs
                 )
             elif hasattr(self._agent, "invoke"):
-                result = self._agent.invoke(
-                    {"input": input_text}, config=invoke_config, **kwargs
-                )
+                result = self._agent.invoke({"input": input_text}, config=invoke_config, **kwargs)
             else:
                 raise AdapterError(
                     self.name,
