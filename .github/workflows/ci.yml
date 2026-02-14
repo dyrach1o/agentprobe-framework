@@ -44,7 +44,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: pip install -e ".[dev,test]"
+        run: pip install -e ".[dev,test,dashboard]"
       - name: Run tests
         run: |
           pytest tests/ \
