@@ -29,7 +29,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[dev,test,dashboard]"
       - name: Run mypy
         run: mypy src/agentprobe/
 

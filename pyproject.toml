@@ -158,6 +158,11 @@ module = [
     "fastapi.*",
     "uvicorn.*",
     "httpx.*",
+    "langchain.*",
+    "langchain_core.*",
+    "crewai.*",
+    "autogen.*",
+    "mcp.*",
 ]
 ignore_missing_imports = true
 
