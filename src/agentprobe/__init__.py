@@ -1,6 +1,6 @@
 """AgentProbe — a testing and evaluation framework for software agents."""
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 from agentprobe.core.assertions import expect, expect_tool_calls
 from agentprobe.core.chaos import ChaosProxy
