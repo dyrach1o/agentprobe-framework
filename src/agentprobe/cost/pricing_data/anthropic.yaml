@@ -1,0 +1,15 @@
+# Anthropic model pricing (USD per 1,000 tokens)
+# Source: https://docs.anthropic.com/en/docs/about-claude/models
+models:
+  - model: claude-sonnet-4-5-20250929
+    input_cost_per_1k: 0.003
+    output_cost_per_1k: 0.015
+  - model: claude-haiku-3-5-20241022
+    input_cost_per_1k: 0.001
+    output_cost_per_1k: 0.005
+  - model: claude-haiku-4-5-20251001
+    input_cost_per_1k: 0.001
+    output_cost_per_1k: 0.005
+  - model: claude-opus-4-0-20250514
+    input_cost_per_1k: 0.015
+    output_cost_per_1k: 0.075

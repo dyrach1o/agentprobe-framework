@@ -1,0 +1,94 @@
+# AgentProbe Configuration
+# Copy this file to agentprobe.yaml and customize for your project.
+# See https://dyrach1o.github.io/agentprobe-framework/reference/config/ for full reference.
+
+# ── Project ──
+project_name: my-project
+test_dir: tests
+
+# ── Test Runner ──
+runner:
+  parallel: false
+  max_workers: 4
+  default_timeout: 30.0
+
+# ── Evaluation ──
+eval:
+  default_evaluators: []
+  # - rules
+  # - embedding
+  # - judge
+
+# ── Judge Evaluator ──
+judge:
+  model: claude-sonnet-4-5-20250929
+  provider: anthropic
+  temperature: 0.0
+  max_tokens: 1024
+
+# ── Trace Recording ──
+trace:
+  enabled: true
+  storage_backend: sqlite  # sqlite | postgresql
+  database_path: .agentprobe/traces.db
+
+# ── Cost Tracking ──
+cost:
+  enabled: true
+  budget_limit_usd: 10.00
+  pricing_dir: null  # uses built-in pricing data by default
+
+# ── Safety Scanning ──
+safety:
+  enabled: true
+  suites:
+    - prompt-injection
+    - data-exfiltration
+
+# ── Reporting ──
+reporting:
+  formats:
+    - terminal
+  output_dir: agentprobe-report
+
+# ── Chaos Testing ──
+chaos:
+  enabled: false
+  seed: null
+  default_probability: 0.1
+
+# ── Snapshot Testing ──
+snapshot:
+  enabled: false
+  snapshot_dir: .agentprobe/snapshots
+  update_on_first_run: true
+  threshold: 0.8
+
+# ── Budget Limits ──
+budget:
+  test_budget_usd: 1.00
+  suite_budget_usd: 10.00
+
+# ── Regression Detection ──
+regression:
+  enabled: false
+  baseline_dir: .agentprobe/baselines
+  threshold: 0.05
+
+# ── Metrics ──
+metrics:
+  enabled: true
+  builtin_metrics:
+    - latency_ms
+    - token_count
+    - cost_usd
+    - eval_score
+    - tool_call_count
+    - error_rate
+  trend_window: 10
+
+# ── Plugins ──
+plugins:
+  enabled: false
+  directories: []
+  entry_point_group: agentprobe.plugins

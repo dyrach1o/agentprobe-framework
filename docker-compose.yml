@@ -1,0 +1,30 @@
+services:
+  agentprobe:
+    build: .
+    volumes:
+      - .:/project
+    working_dir: /project
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    entrypoint: ["agentprobe"]
+    command: ["test", "-d", "tests/"]
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: agentprobe
+      POSTGRES_USER: agentprobe
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agentprobe}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentprobe"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

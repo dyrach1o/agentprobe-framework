@@ -1,0 +1,12 @@
+# Mistral model pricing (USD per 1,000 tokens)
+# Source: https://mistral.ai/technology/
+models:
+  - model: mistral-large-latest
+    input_cost_per_1k: 0.002
+    output_cost_per_1k: 0.006
+  - model: mistral-small-latest
+    input_cost_per_1k: 0.0002
+    output_cost_per_1k: 0.0006
+  - model: codestral-latest
+    input_cost_per_1k: 0.0003
+    output_cost_per_1k: 0.0009

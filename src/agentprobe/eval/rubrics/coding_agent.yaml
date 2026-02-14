@@ -1,0 +1,34 @@
+# Coding agent evaluation rubric
+name: coding-agent
+description: Evaluation criteria for agents that generate, review, or modify code.
+
+criteria:
+  - name: correctness
+    weight: 3.0
+    description: >
+      Does the generated code produce the correct output for the given input?
+      Does it handle specified requirements without logical errors?
+
+  - name: code_quality
+    weight: 2.0
+    description: >
+      Is the code well-structured, readable, and maintainable?
+      Does it follow language conventions and avoid anti-patterns?
+
+  - name: error_handling
+    weight: 2.5
+    description: >
+      Does the code handle edge cases and potential failures gracefully?
+      Are exceptions caught and reported with useful context?
+
+  - name: documentation
+    weight: 1.5
+    description: >
+      Are functions and classes documented with clear descriptions?
+      Are complex sections explained with inline comments where needed?
+
+  - name: efficiency
+    weight: 1.0
+    description: >
+      Is the code reasonably efficient in terms of time and space complexity?
+      Does it avoid unnecessary computation or resource usage?

@@ -1,0 +1,12 @@
+# Cohere model pricing (USD per 1,000 tokens)
+# Source: https://cohere.com/pricing
+models:
+  - model: command-r-plus
+    input_cost_per_1k: 0.0025
+    output_cost_per_1k: 0.01
+  - model: command-r
+    input_cost_per_1k: 0.00015
+    output_cost_per_1k: 0.0006
+  - model: embed-english-v3.0
+    input_cost_per_1k: 0.0001
+    output_cost_per_1k: 0.0

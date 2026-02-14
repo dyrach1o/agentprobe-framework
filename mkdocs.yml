@@ -1,0 +1,100 @@
+site_name: AgentProbe
+site_description: A testing and evaluation framework for software agents
+site_url: https://dyrach1o.github.io/agentprobe-framework
+repo_url: https://github.com/dyrach1o/agentprobe-framework
+repo_name: dyrach1o/agentprobe-framework
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Quickstart: getting-started/quickstart.md
+      - Configuration: getting-started/configuration.md
+  - Guides:
+      - Writing Tests: guides/writing-tests.md
+      - Evaluators: guides/evaluators.md
+      - Safety Testing: guides/safety-testing.md
+      - Regression Testing: guides/regression-testing.md
+      - Cost Management: guides/cost-management.md
+      - CI/CD Integration: guides/ci-cd-integration.md
+      - Multi-Agent Testing: guides/multi-agent-testing.md
+  - Reference:
+      - CLI: reference/cli.md
+      - Configuration: reference/config.md
+      - Adapters: reference/adapters.md
+      - API Reference:
+          - Core: reference/api/core.md
+          - Evaluation: reference/api/eval.md
+          - Trace: reference/api/trace.md
+          - Cost: reference/api/cost.md
+          - Safety: reference/api/safety.md
+          - Storage: reference/api/storage.md
+          - Metrics: reference/api/metrics.md
+          - Plugins: reference/api/plugins.md
+          - Adapters: reference/api/adapters.md
+          - Reporting: reference/api/reporting.md
+          - Regression: reference/api/regression.md
+          - Security: reference/api/security.md
+  - Plugins:
+      - Overview: plugins/overview.md
+      - Creating Plugins: plugins/creating-plugins.md
+      - Plugin Types: plugins/plugin-types.md
+  - Changelog: changelog.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: true
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets
+  - toc:
+      permalink: true
+  - attr_list
+  - def_list
+  - tables
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/dyrach1o/agentprobe-framework

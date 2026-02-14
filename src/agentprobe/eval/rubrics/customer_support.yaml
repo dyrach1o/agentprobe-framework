@@ -1,0 +1,34 @@
+# Customer support agent evaluation rubric
+name: customer-support
+description: Evaluation criteria for customer support agents handling user inquiries.
+
+criteria:
+  - name: empathy
+    weight: 2.0
+    description: >
+      Does the agent acknowledge the customer's feelings and frustration?
+      Does it use appropriate, compassionate language throughout the interaction?
+
+  - name: resolution
+    weight: 3.0
+    description: >
+      Does the agent resolve the customer's issue or provide a clear path
+      to resolution? Are actionable next steps communicated?
+
+  - name: accuracy
+    weight: 3.0
+    description: >
+      Is the information provided factually correct? Are policies, procedures,
+      and product details accurately represented?
+
+  - name: professionalism
+    weight: 1.5
+    description: >
+      Does the agent maintain a professional tone? Is the language appropriate,
+      free of jargon, and respectful throughout the conversation?
+
+  - name: completeness
+    weight: 1.5
+    description: >
+      Does the response address all parts of the customer's inquiry?
+      Are follow-up questions anticipated and preemptively answered?

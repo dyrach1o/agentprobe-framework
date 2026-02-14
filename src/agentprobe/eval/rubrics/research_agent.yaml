@@ -1,0 +1,34 @@
+# Research agent evaluation rubric
+name: research-agent
+description: Evaluation criteria for agents that perform research and synthesize information.
+
+criteria:
+  - name: source_quality
+    weight: 2.5
+    description: >
+      Does the agent use reliable, authoritative sources?
+      Are sources cited or referenced appropriately in the output?
+
+  - name: factual_accuracy
+    weight: 3.0
+    description: >
+      Is the information presented factually correct and verifiable?
+      Does the agent avoid fabricating claims or citing nonexistent sources?
+
+  - name: comprehensiveness
+    weight: 2.0
+    description: >
+      Does the research cover the topic thoroughly?
+      Are multiple perspectives and relevant subtopics addressed?
+
+  - name: bias_avoidance
+    weight: 1.5
+    description: >
+      Does the agent present information in a balanced, unbiased manner?
+      Are competing viewpoints fairly represented without editorializing?
+
+  - name: clarity
+    weight: 1.0
+    description: >
+      Is the research output clearly organized and easy to follow?
+      Are findings summarized effectively with logical structure?
