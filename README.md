@@ -16,6 +16,33 @@ AgentProbe gives you the tools to test autonomous software agents the same way y
 
 ---
 
+## Who Is This For?
+
+- **You build agents with LangChain, CrewAI, AutoGen, or MCP** and need to verify they work correctly after every change
+- **You're shipping agents to production** and need cost guardrails, safety checks, and regression detection before each deploy
+- **You want pytest-native testing** instead of custom scripts, notebooks, or SaaS dashboards
+- **Your team needs reproducible agent tests** with structured traces, not ad-hoc print statements and manual spot-checks
+
+If your agent calls tools, makes decisions, or produces non-deterministic output, AgentProbe helps you test it like any other critical software.
+
+---
+
+## How It Compares
+
+| | AgentProbe | DeepEval | RAGAS | Promptfoo | LangSmith |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **pytest native** | fixture | custom assert | -- | -- | -- |
+| **Self-hosted** | yes | yes | yes | yes | SaaS |
+| **Trace recording** | yes | -- | -- | -- | yes |
+| **Cost tracking** | built-in (5 providers) | -- | -- | yes | yes |
+| **Safety scanning** | 6 built-in suites | red teaming | -- | red teaming | -- |
+| **Framework adapters** | 4 (LC, CrewAI, AutoGen, MCP) | -- | LangChain | provider-based | LangChain |
+| **Regression detection** | yes | via cloud | -- | snapshots | yes |
+| **Language** | Python | Python | Python | JS/YAML | Python |
+| **License** | Apache 2.0 | Apache 2.0 | Apache 2.0 | MIT | Proprietary |
+
+---
+
 ## Install
 
 ```bash
@@ -395,6 +422,14 @@ make docs-serve   # local docs at localhost:8000
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding standards, and PR workflow.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting.
 
 ## License
 
