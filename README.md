@@ -5,8 +5,11 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/agentprobe-framework)](https://pypi.org/project/agentprobe-framework/)
+[![Live Demo](https://img.shields.io/badge/demo-live-e2a04f)](https://dyrach1o.github.io/agentprobe-framework/demo/)
 
 **A testing and evaluation framework for software agents.**
+
+> **[Try the interactive demo](https://dyrach1o.github.io/agentprobe-framework/demo/)** — explore trace recording, evaluators, and cost tracking in your browser.
 
 AgentProbe gives you the tools to test autonomous software agents the same way you'd test any critical software --- with structured assertions, regression detection, safety scans, cost tracking, and full execution tracing. If your agent calls tools, makes decisions, or produces non-deterministic output, AgentProbe helps you verify it works correctly and keeps working.
 
