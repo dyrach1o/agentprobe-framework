@@ -40,6 +40,7 @@ nav:
   - Guides:
       - Writing Tests: guides/writing-tests.md
       - Evaluators: guides/evaluators.md
+      - Custom Evaluator Cookbook: guides/custom-evaluators.md
       - Safety Testing: guides/safety-testing.md
       - Regression Testing: guides/regression-testing.md
       - Cost Management: guides/cost-management.md
