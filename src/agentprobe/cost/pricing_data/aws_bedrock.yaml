@@ -1,0 +1,86 @@
+# AWS Bedrock model pricing (USD per 1,000 tokens)
+# Source: https://aws.amazon.com/bedrock/pricing/
+# Note: Bedrock uses different model IDs than direct API access
+models:
+  # Anthropic models via Bedrock
+  - model: anthropic.claude-3-5-sonnet-20241022-v2:0
+    input_cost_per_1k: 0.006
+    output_cost_per_1k: 0.030
+  - model: anthropic.claude-3-5-sonnet-20240620-v1:0
+    input_cost_per_1k: 0.006
+    output_cost_per_1k: 0.030
+  - model: anthropic.claude-3-haiku-20240307-v1:0
+    input_cost_per_1k: 0.0005
+    output_cost_per_1k: 0.0025
+  - model: anthropic.claude-3-opus-20240229-v1:0
+    input_cost_per_1k: 0.015
+    output_cost_per_1k: 0.075
+  - model: anthropic.claude-3-sonnet-20240229-v1:0
+    input_cost_per_1k: 0.003
+    output_cost_per_1k: 0.015
+  # Amazon Titan models
+  - model: amazon.titan-text-express-v1
+    input_cost_per_1k: 0.0004
+    output_cost_per_1k: 0.0006
+  - model: amazon.titan-text-lite-v1
+    input_cost_per_1k: 0.0003
+    output_cost_per_1k: 0.0004
+  - model: amazon.titan-embed-text-v2:0
+    input_cost_per_1k: 0.0002
+    output_cost_per_1k: 0.0002
+  # Meta Llama models
+  - model: meta.llama3-70b-instruct-v1:0
+    input_cost_per_1k: 0.00099
+    output_cost_per_1k: 0.00099
+  - model: meta.llama3-8b-instruct-v1:0
+    input_cost_per_1k: 0.0003
+    output_cost_per_1k: 0.0006
+  - model: meta.llama3-1-70b-instruct-v1:0
+    input_cost_per_1k: 0.00099
+    output_cost_per_1k: 0.00099
+  - model: meta.llama3-1-8b-instruct-v1:0
+    input_cost_per_1k: 0.0003
+    output_cost_per_1k: 0.0006
+  - model: meta.llama3-2-90b-instruct-v1:0
+    input_cost_per_1k: 0.002
+    output_cost_per_1k: 0.002
+  - model: meta.llama3-2-11b-instruct-v1:0
+    input_cost_per_1k: 0.0005
+    output_cost_per_1k: 0.0005
+  - model: meta.llama3-2-3b-instruct-v1:0
+    input_cost_per_1k: 0.0003
+    output_cost_per_1k: 0.0003
+  - model: meta.llama3-2-1b-instruct-v1:0
+    input_cost_per_1k: 0.0002
+    output_cost_per_1k: 0.0002
+  # Mistral models
+  - model: mistral.mistral-large-2407-v1:0
+    input_cost_per_1k: 0.004
+    output_cost_per_1k: 0.012
+  - model: mistral.mistral-large-2402-v1:0
+    input_cost_per_1k: 0.004
+    output_cost_per_1k: 0.012
+  - model: mistral.mixtral-8x7b-instruct-v0:1
+    input_cost_per_1k: 0.0006
+    output_cost_per_1k: 0.001
+  - model: mistral.mistral-7b-instruct-v0:2
+    input_cost_per_1k: 0.0003
+    output_cost_per_1k: 0.0006
+  # Cohere models
+  - model: cohere.command-r-plus-v1:0
+    input_cost_per_1k: 0.003
+    output_cost_per_1k: 0.015
+  - model: cohere.command-r-v1:0
+    input_cost_per_1k: 0.00075
+    output_cost_per_1k: 0.003
+  # AI21 Labs models
+  - model: ai21.jamba-1-5-large-v1:0
+    input_cost_per_1k: 0.002
+    output_cost_per_1k: 0.008
+  - model: ai21.jamba-1-5-mini-v1:0
+    input_cost_per_1k: 0.0004
+    output_cost_per_1k: 0.0008
+  # DeepSeek models
+  - model: deepseek.deepseek-v3.2
+    input_cost_per_1k: 0.00062
+    output_cost_per_1k: 0.00185
