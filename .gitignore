@@ -40,3 +40,6 @@ Thumbs.db
 # AgentProbe runtime
 .agentprobe/
 agentprobe-report/
+
+# Local config
+.claude/

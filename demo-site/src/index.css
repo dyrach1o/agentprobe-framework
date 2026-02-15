@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #e2a04f;
+  --color-primary-light: #f0c078;
+  --color-primary-dark: #c4823a;
+  --color-accent: #8b5cf6;
+  --color-accent-light: #a78bfa;
+  --color-warm: #c76a4a;
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-danger: #ef4444;
+  --color-surface: #141414;
+  --color-surface-light: #1e1e1e;
+  --color-surface-lighter: #262626;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: #0a0a0a;
+  color: #d4d4d4;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgba(226, 160, 79, 0.25);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Typography                                                         */
+/* ------------------------------------------------------------------ */
+
+.font-display {
+  font-family: 'Instrument Serif', Georgia, serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Grain / noise texture overlay                                      */
+/* ------------------------------------------------------------------ */
+
+.grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Scrollbar                                                          */
+/* ------------------------------------------------------------------ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Gradient text utility                                              */
+/* ------------------------------------------------------------------ */
+
+.text-gradient {
+  background: linear-gradient(135deg, #e2a04f 0%, #c76a4a 50%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-subtle {
+  background: linear-gradient(135deg, #f5f5f5 0%, #d4d4d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Dot grid pattern                                                   */
+/* ------------------------------------------------------------------ */
+
+.dot-grid {
+  background-image: radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Glow utilities                                                     */
+/* ------------------------------------------------------------------ */
+
+.glow-warm {
+  box-shadow: 0 0 60px rgba(226, 160, 79, 0.08), 0 0 120px rgba(199, 106, 74, 0.04);
+}
+
+.glow-violet {
+  box-shadow: 0 0 60px rgba(139, 92, 246, 0.08), 0 0 120px rgba(139, 92, 246, 0.04);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Divider gradient                                                   */
+/* ------------------------------------------------------------------ */
+
+.divider-gradient {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
+}
