@@ -165,6 +165,8 @@ module = [
     "autogen.*",
     "mcp.*",
     "agents.*",
+    "google.generativeai.*",
+    "google.genai.*",
 ]
 ignore_missing_imports = true
 
