@@ -18,7 +18,7 @@ AgentProbe gives you the tools to test autonomous software agents the same way y
 
 ## Who Is This For?
 
-- **You build agents with LangChain, CrewAI, AutoGen, or MCP** and need to verify they work correctly after every change
+- **You build agents with LangChain, CrewAI, AutoGen, MCP, OpenAI Agents, or Gemini** and need to verify they work correctly after every change
 - **You're shipping agents to production** and need cost guardrails, safety checks, and regression detection before each deploy
 - **You want pytest-native testing** instead of custom scripts, notebooks, or SaaS dashboards
 - **Your team needs reproducible agent tests** with structured traces, not ad-hoc print statements and manual spot-checks
@@ -34,9 +34,10 @@ If your agent calls tools, makes decisions, or produces non-deterministic output
 | **pytest native** | fixture | custom assert | -- | -- | -- |
 | **Self-hosted** | yes | yes | yes | yes | SaaS |
 | **Trace recording** | yes | -- | -- | -- | yes |
-| **Cost tracking** | built-in (5 providers) | -- | -- | yes | yes |
+| **Cost tracking** | built-in (6 providers) | -- | -- | yes | yes |
 | **Safety scanning** | 6 built-in suites | red teaming | -- | red teaming | -- |
-| **Framework adapters** | 4 (LC, CrewAI, AutoGen, MCP) | -- | LangChain | provider-based | LangChain |
+| **Framework adapters** | 6 (LC, CrewAI, AutoGen, MCP, OpenAI, Gemini) | -- | LangChain | provider-based | LangChain |
+| **Parallel testing** | pytest-xdist | -- | -- | yes | -- |
 | **Regression detection** | yes | via cloud | -- | snapshots | yes |
 | **Language** | Python | Python | Python | JS/YAML | Python |
 | **License** | Apache 2.0 | Apache 2.0 | Apache 2.0 | MIT | Proprietary |
@@ -84,10 +85,11 @@ async def test_greeting(agentprobe):
     assert_cost(trace, max_usd=0.01)
 ```
 
-Run with standard pytest:
+Run with standard pytest (supports parallel execution via xdist):
 
 ```bash
-pytest tests/ -v
+pytest tests/ -v                    # standard
+pytest tests/ -n auto -v            # parallel with xdist
 ```
 
 ### Standalone CLI
@@ -175,7 +177,7 @@ result = await evaluator.evaluate(test_case, trace)
 
 ### Cost Tracking
 
-Track token usage and costs across providers. Supports Anthropic, OpenAI, Google, Mistral, and Cohere pricing out of the box:
+Track token usage and costs across providers. Supports Anthropic, OpenAI, Google, Mistral, Cohere, and AWS Bedrock pricing out of the box:
 
 ```python
 from agentprobe.cost.calculator import CostCalculator
@@ -357,6 +359,8 @@ Built-in adapters for popular agent frameworks:
 | CrewAI | `CrewAIAdapter` | `agentprobe.adapters.crewai` |
 | AutoGen | `AutoGenAdapter` | `agentprobe.adapters.autogen` |
 | MCP | `MCPAdapter` | `agentprobe.adapters.mcp` |
+| OpenAI Agents SDK | `OpenAIAgentsAdapter` | `agentprobe.adapters.openai_agents` |
+| Google Gemini | `GeminiAdapter` | `agentprobe.adapters.gemini` |
 
 Or implement the `AdapterProtocol`:
 
@@ -387,11 +391,11 @@ src/agentprobe/
     core/          Test runner, discovery, assertions, config, models
     eval/          Evaluators: rules, embedding, judge, statistical, trace compare
     trace/         Recorder, replay, diff, time travel
-    cost/          Calculator, pricing data (5 providers), budgets
+    cost/          Calculator, pricing data (6 providers), budgets
     safety/        Scanner, 6 built-in test suites, payloads
     regression/    Detector, baselines, behavioral diff
     security/      PII redaction, field encryption, audit logging
-    adapters/      LangChain, CrewAI, AutoGen, MCP
+    adapters/      LangChain, CrewAI, AutoGen, MCP, OpenAI Agents, Gemini
     metrics/       Collection, aggregation, trending
     storage/       SQLite + PostgreSQL backends with migrations
     reporting/     Terminal, HTML, JUnit XML, JSON, Markdown, CSV
