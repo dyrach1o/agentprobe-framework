@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import AsyncGenerator
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -52,10 +53,36 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=False,
         help="Persist traces to storage after each test.",
     )
+    group.addoption(
+        "--agentprobe-parallel",
+        action="store_true",
+        default=False,
+        help="Enable parallel-safe mode (per-worker DB files). Enabled automatically under xdist.",
+    )
+
+
+def _is_xdist_worker(config: pytest.Config) -> bool:
+    """Return True if running as a pytest-xdist worker process.
+
+    Args:
+        config: The pytest configuration object.
+    """
+    return hasattr(config, "workerinput")
+
+
+def _get_xdist_worker_id(config: pytest.Config) -> str | None:
+    """Return the xdist worker ID (e.g. 'gw0') or None if not a worker.
+
+    Args:
+        config: The pytest configuration object.
+    """
+    if _is_xdist_worker(config):
+        return config.workerinput["workerid"]  # type: ignore[attr-defined]
+    return None
 
 
 def pytest_configure(config: pytest.Config) -> None:
-    """Register the ``agentprobe`` marker.
+    """Register the ``agentprobe`` marker and detect xdist.
 
     Args:
         config: The pytest configuration object.
@@ -64,6 +91,12 @@ def pytest_configure(config: pytest.Config) -> None:
         "markers",
         "agentprobe: marks tests using the AgentProbe framework",
     )
+
+    # Detect xdist worker mode and stash the worker ID for fixture use.
+    worker_id = _get_xdist_worker_id(config)
+    if worker_id is not None:
+        config._agentprobe_worker_id = worker_id  # type: ignore[attr-defined]
+        logger.debug("AgentProbe: running as xdist worker %s", worker_id)
 
 
 class AgentProbeContext:
@@ -198,12 +231,43 @@ def agentprobe_config(request: pytest.FixtureRequest) -> AgentProbeConfig:
     return load_config(config_path)
 
 
+def _resolve_db_path(config: pytest.Config, default_path: str) -> str:
+    """Resolve the database path, appending worker ID for parallel safety.
+
+    When running under pytest-xdist or with ``--agentprobe-parallel``,
+    each worker gets its own database file to avoid SQLite write contention.
+
+    Args:
+        config: The pytest configuration object.
+        default_path: The default database path from configuration.
+
+    Returns:
+        The resolved database path (potentially worker-specific).
+    """
+    trace_dir = config.getoption("--agentprobe-trace-dir", default=None)
+    base_path = trace_dir + "/traces.db" if trace_dir else default_path
+
+    # Determine if we need per-worker isolation.
+    worker_id: str | None = getattr(config, "_agentprobe_worker_id", None)
+    parallel_flag: bool = config.getoption("--agentprobe-parallel", default=False)
+
+    if worker_id is not None or parallel_flag:
+        suffix = worker_id or "main"
+        p = Path(base_path)
+        return str(p.with_stem(f"{p.stem}_{suffix}"))
+
+    return base_path
+
+
 @pytest.fixture(scope="session")
 async def agentprobe_storage(
     agentprobe_config: AgentProbeConfig,
     request: pytest.FixtureRequest,
 ) -> AsyncGenerator[SQLiteStorage]:
     """Create and manage a SQLite storage instance (session-scoped).
+
+    When running under pytest-xdist, each worker gets its own database
+    file (e.g. ``traces_gw0.db``) to avoid SQLite write contention.
 
     Args:
         agentprobe_config: The loaded configuration.
@@ -212,8 +276,7 @@ async def agentprobe_storage(
     Yields:
         An initialized SQLiteStorage instance.
     """
-    trace_dir = request.config.getoption("--agentprobe-trace-dir", default=None)
-    db_path = trace_dir + "/traces.db" if trace_dir else agentprobe_config.trace.database_path
+    db_path = _resolve_db_path(request.config, agentprobe_config.trace.database_path)
 
     storage = SQLiteStorage(db_path=db_path)
     await storage.setup()

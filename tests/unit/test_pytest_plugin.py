@@ -37,12 +37,13 @@ class TestPytestAddoption:
         pytest_addoption(parser)
 
         parser.getgroup.assert_called_once_with("agentprobe", "AgentProbe agent testing")
-        assert group.addoption.call_count == 3
+        assert group.addoption.call_count == 4
 
         option_names = [call.args[0] for call in group.addoption.call_args_list]
         assert "--agentprobe-config" in option_names
         assert "--agentprobe-trace-dir" in option_names
         assert "--agentprobe-store-traces" in option_names
+        assert "--agentprobe-parallel" in option_names
 
 
 class TestPytestConfigure:
