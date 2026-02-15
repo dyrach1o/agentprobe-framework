@@ -7,74 +7,77 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function TraceViewer() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <div className="mx-auto max-w-5xl px-6 py-32">
-        {/* -------------------------------------------------------- */}
-        {/* Header                                                    */}
-        {/* -------------------------------------------------------- */}
-        <motion.header
-          initial={{ opacity: 0, y: -20 }}
+    <div className="min-h-screen pb-16 px-6">
+      <div className="mx-auto max-w-5xl">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease }}
-          className="mb-16"
+          className="mb-16 pt-12"
         >
-          <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.2em] text-primary">
-            Trace Explorer
+          <p className="text-[13px] uppercase tracking-[0.2em] text-accent mb-4">
+            Playground
           </p>
-          <h1 className="font-display text-4xl text-white sm:text-5xl">
+          <h1 className="font-display text-4xl sm:text-5xl text-white mb-4">
             Trace Viewer
           </h1>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-neutral-400">
-            Explore a complete agent execution trace &mdash; every LLM call,
-            tool invocation, and decision captured.
+          <p className="text-neutral-500 max-w-lg leading-relaxed">
+            Explore a complete agent execution &mdash; every decision, tool
+            call, and model invocation captured and timed.
           </p>
-        </motion.header>
+        </motion.div>
 
-        {/* -------------------------------------------------------- */}
-        {/* Input / Output overview                                   */}
-        {/* -------------------------------------------------------- */}
-        <motion.section
+        {/* I/O Terminal */}
+        <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease }}
-          className="mb-12 grid gap-5 md:grid-cols-2"
+          transition={{ duration: 0.5, delay: 0.1, ease }}
+          className="mb-12"
         >
-          {/* User Input card */}
-          <div className="rounded-2xl border border-white/[0.06] bg-surface p-6 transition-colors duration-300 hover:border-white/[0.1] hover:bg-surface-light">
-            <h3 className="mb-3 text-[13px] font-medium uppercase tracking-[0.2em] text-primary">
-              User Input
-            </h3>
-            <p className="text-sm leading-relaxed text-neutral-300">
-              {sampleTrace.input_text}
-            </p>
+          <div className="flex items-baseline justify-between mb-3">
+            <span className="font-mono text-[13px] text-neutral-500">
+              session
+            </span>
           </div>
-
-          {/* Agent Output card */}
-          <div className="rounded-2xl border border-white/[0.06] bg-surface p-6 transition-colors duration-300 hover:border-white/[0.1] hover:bg-surface-light">
-            <h3 className="mb-3 text-[13px] font-medium uppercase tracking-[0.2em] text-accent">
-              Agent Output
-            </h3>
-            <p className="text-sm leading-relaxed text-neutral-300">
-              {sampleTrace.output_text}
-            </p>
+          <div className="rounded-xl border border-white/[0.06] bg-[#0e0e0e] overflow-hidden">
+            {/* Chrome */}
+            <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.04] bg-white/[0.01]">
+              <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]/60" />
+              <div className="h-2.5 w-2.5 rounded-full bg-[#febc2e]/60" />
+              <div className="h-2.5 w-2.5 rounded-full bg-[#28c840]/60" />
+            </div>
+            {/* Input */}
+            <div className="px-5 py-3.5 border-b border-white/[0.04] font-mono text-[13px] leading-[1.7]">
+              <span className="text-primary mr-3">▸</span>
+              <span className="text-neutral-300">
+                {sampleTrace.input_text}
+              </span>
+            </div>
+            {/* Output */}
+            <div className="px-5 py-3.5 font-mono text-[13px] leading-[1.7]">
+              <span className="text-accent mr-3">◂</span>
+              <span className="text-neutral-400">
+                {sampleTrace.output_text}
+              </span>
+            </div>
           </div>
-        </motion.section>
+        </motion.div>
 
         {/* Divider */}
         <div className="divider-gradient mb-12" />
 
-        {/* -------------------------------------------------------- */}
-        {/* Summary stats                                             */}
-        {/* -------------------------------------------------------- */}
+        {/* Summary stats */}
         <TraceSummary trace={sampleTrace} />
 
         {/* Divider */}
         <div className="divider-gradient mb-12" />
 
-        {/* -------------------------------------------------------- */}
-        {/* Timeline                                                  */}
-        {/* -------------------------------------------------------- */}
-        <TraceTimeline turns={sampleTrace.turns} />
+        {/* Waterfall timeline */}
+        <TraceTimeline
+          turns={sampleTrace.turns}
+          totalMs={sampleTrace.total_latency_ms}
+        />
       </div>
     </div>
   );

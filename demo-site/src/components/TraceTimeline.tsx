@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BrainIcon, WrenchIcon, ChevronDownIcon, SuccessCircleIcon, FailCircleIcon } from "../components/Icons";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { Turn } from "../data/sampleTrace";
@@ -8,238 +7,237 @@ import type { Turn } from "../data/sampleTrace";
 const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /* ------------------------------------------------------------------ */
-/* Single turn card                                                    */
+/* Timing computation                                                  */
 /* ------------------------------------------------------------------ */
 
-function TurnCard({ turn, index }: { turn: Turn; index: number }) {
-  const [open, setOpen] = useState(false);
+interface TurnTiming {
+  turn: Turn;
+  index: number;
+  startMs: number;
+  durationMs: number;
+}
+
+function computeTimings(turns: Turn[]): TurnTiming[] {
+  let offset = 0;
+  return turns.map((turn, index) => {
+    const duration =
+      turn.turn_type === "llm_call"
+        ? turn.llm_call?.latency_ms ?? 0
+        : turn.tool_call?.latency_ms ?? 0;
+    const timing = { turn, index, startMs: offset, durationMs: duration };
+    offset += duration;
+    return timing;
+  });
+}
+
+function getBarColor(turn: Turn): string {
+  if (turn.turn_type === "llm_call") return "#e2a04f";
+  if (turn.tool_call && !turn.tool_call.success) return "#ef4444";
+  return "#8b5cf6";
+}
+
+function formatDuration(ms: number): string {
+  return ms >= 1000 ? `${(ms / 1000).toFixed(2)}s` : `${ms}ms`;
+}
+
+/* ------------------------------------------------------------------ */
+/* Waterfall row                                                       */
+/* ------------------------------------------------------------------ */
+
+function WaterfallRow({
+  timing,
+  totalMs,
+  isSelected,
+  onSelect,
+}: {
+  timing: TurnTiming;
+  totalMs: number;
+  isSelected: boolean;
+  onSelect: () => void;
+}) {
+  const { turn, index, startMs, durationMs } = timing;
   const isLlm = turn.turn_type === "llm_call";
-
-  const dotColor = isLlm ? "bg-primary/20" : "bg-accent/20";
-  const borderColor = isLlm ? "border-l-primary" : "border-l-accent";
-  const Icon = isLlm ? BrainIcon : WrenchIcon;
-
-  const latency = isLlm
-    ? turn.llm_call?.latency_ms
-    : turn.tool_call?.latency_ms;
+  const color = getBarColor(turn);
+  const name = isLlm
+    ? turn.llm_call?.model ?? "llm"
+    : turn.tool_call?.tool_name ?? "tool";
+  const leftPct = (startMs / totalMs) * 100;
+  const widthPct = Math.max((durationMs / totalMs) * 100, 1.5);
+  const failed = !isLlm && turn.tool_call && !turn.tool_call.success;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -24 }}
+    <motion.button
+      type="button"
+      onClick={onSelect}
+      initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease }}
-      className="relative pl-10"
+      transition={{ duration: 0.4, delay: index * 0.06, ease }}
+      className={`w-full text-left group transition-colors duration-200 ${
+        isSelected ? "bg-white/[0.04]" : "hover:bg-white/[0.02]"
+      }`}
     >
-      {/* Timeline dot */}
-      <div
-        className={`absolute left-0 top-5 flex h-7 w-7 items-center justify-center rounded-full ${dotColor}`}
-      >
-        <Icon size={16} />
-      </div>
+      <div className="grid grid-cols-[32px_12px_88px_1fr_60px] items-center gap-2 px-4 py-2.5">
+        {/* Step number */}
+        <span className="font-mono text-[11px] text-neutral-600 text-right">
+          {index + 1}
+        </span>
 
-      {/* Vertical connector line */}
-      <div className="absolute left-[13px] top-12 bottom-0 w-px bg-white/[0.06]" />
+        {/* Type dot */}
+        <span
+          className="h-2 w-2 rounded-full shrink-0"
+          style={{
+            backgroundColor: color,
+            boxShadow: `0 0 6px ${color}40`,
+          }}
+        />
 
-      {/* Card */}
-      <button
-        type="button"
-        onClick={() => setOpen((prev) => !prev)}
-        className={`w-full cursor-pointer rounded-2xl border border-white/[0.06] border-l-[3px] ${borderColor}
-                    bg-surface p-5 text-left transition-colors duration-300
-                    hover:border-white/[0.1] hover:bg-surface-light`}
-      >
-        {/* Header row */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex min-w-0 flex-1 items-center gap-3">
-            {/* Step number */}
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-white/[0.06] font-mono text-xs font-semibold text-neutral-500">
-              {index + 1}
-            </span>
+        {/* Name */}
+        <span
+          className="font-mono text-[12px] truncate"
+          style={{ color: failed ? "#ef4444" : color }}
+        >
+          {name}
+          {failed && " ✕"}
+        </span>
 
-            {/* Type badge — border style, no bg fill */}
-            <span
-              className={`shrink-0 rounded-md border px-2.5 py-0.5 text-xs font-medium ${
-                isLlm
-                  ? "border-primary/30 text-primary"
-                  : "border-accent/30 text-accent"
-              }`}
-            >
-              {isLlm ? "LLM Call" : "Tool Call"}
-            </span>
-
-            {/* Name */}
-            <span className="truncate text-sm text-white">
-              {isLlm
-                ? turn.llm_call?.model ?? "unknown"
-                : turn.tool_call?.tool_name ?? "unknown"}
-            </span>
-
-            {/* Success / failure badge (tool calls only) */}
-            {!isLlm && turn.tool_call && (
-              <span
-                className={`flex shrink-0 items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium ${
-                  turn.tool_call.success
-                    ? "border-success/30 text-success"
-                    : "border-danger/30 text-danger"
-                }`}
-              >
-                {turn.tool_call.success ? (
-                  <SuccessCircleIcon size={14} />
-                ) : (
-                  <FailCircleIcon size={14} />
-                )}
-                {turn.tool_call.success ? "success" : "failed"}
-              </span>
-            )}
-          </div>
-
-          {/* Right side: tokens / latency / chevron */}
-          <div className="flex shrink-0 items-center gap-3">
-            {isLlm && turn.llm_call && (
-              <span className="hidden font-mono text-xs text-neutral-500 sm:inline">
-                {turn.llm_call.input_tokens} in / {turn.llm_call.output_tokens}{" "}
-                out
-              </span>
-            )}
-            {latency !== undefined && (
-              <span className="font-mono text-xs text-neutral-600">
-                {latency >= 1000
-                  ? `${(latency / 1000).toFixed(2)}s`
-                  : `${latency}ms`}
-              </span>
-            )}
-            <motion.span
-              animate={{ rotate: open ? 180 : 0 }}
-              transition={{ duration: 0.25, ease }}
-            >
-              <ChevronDownIcon size={16} />
-            </motion.span>
-          </div>
+        {/* Waterfall bar */}
+        <div className="relative h-5 rounded-sm overflow-hidden bg-white/[0.015]">
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{
+              duration: 0.6,
+              delay: index * 0.06 + 0.2,
+              ease,
+            }}
+            className="absolute top-1 bottom-1 rounded-[3px] origin-left"
+            style={{
+              left: `${leftPct}%`,
+              width: `${widthPct}%`,
+              backgroundColor: color,
+              opacity: 0.65,
+              boxShadow: `0 0 10px ${color}25`,
+            }}
+          />
         </div>
 
-        {/* Collapsed summary */}
-        <p className="mt-2.5 text-xs leading-relaxed text-neutral-400">
+        {/* Duration */}
+        <span className="font-mono text-[11px] text-neutral-500 text-right">
+          {formatDuration(durationMs)}
+        </span>
+      </div>
+
+      {/* Content summary */}
+      <div className="px-4 pb-2.5 -mt-1">
+        <p className="font-mono text-[11px] text-neutral-600 truncate pl-[46px]">
           {turn.content}
         </p>
-      </button>
-
-      {/* Expanded detail */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            key={turn.turn_id + "-detail"}
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease }}
-            className="overflow-hidden"
-          >
-            <div className="mt-2 space-y-4 rounded-2xl border border-white/[0.06] bg-surface-light p-5">
-              {isLlm && turn.llm_call && <LlmDetail call={turn.llm_call} />}
-              {!isLlm && turn.tool_call && (
-                <ToolDetail call={turn.tool_call} />
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+      </div>
+    </motion.button>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* LLM call detail                                                     */
+/* Turn detail — LLM call                                              */
 /* ------------------------------------------------------------------ */
 
-function LlmDetail({
-  call,
-}: {
-  call: NonNullable<Turn["llm_call"]>;
-}) {
+function LlmDetail({ call }: { call: NonNullable<Turn["llm_call"]> }) {
   return (
-    <>
-      {/* Token badges — border style */}
-      <div className="flex flex-wrap gap-2">
-        <span className="rounded-md border border-primary/30 px-2.5 py-1 font-mono text-xs font-medium text-primary">
-          {call.input_tokens} input tokens
-        </span>
-        <span className="rounded-md border border-primary/30 px-2.5 py-1 font-mono text-xs font-medium text-primary">
-          {call.output_tokens} output tokens
-        </span>
-        <span className="rounded-md border border-white/[0.06] px-2.5 py-1 font-mono text-xs text-neutral-500">
-          {call.latency_ms}ms latency
-        </span>
-        <span className="rounded-md border border-white/[0.06] px-2.5 py-1 font-mono text-xs text-neutral-500">
-          {call.model}
-        </span>
+    <div className="px-5 py-4 space-y-4 border-t border-white/[0.04] bg-white/[0.01]">
+      {/* Key-value pairs */}
+      <div className="font-mono text-[12px] leading-[2] space-y-0">
+        <div className="flex gap-4">
+          <span className="text-neutral-600 w-16 shrink-0 text-right">
+            model
+          </span>
+          <span className="text-neutral-300">{call.model}</span>
+        </div>
+        <div className="flex gap-4">
+          <span className="text-neutral-600 w-16 shrink-0 text-right">
+            tokens
+          </span>
+          <span className="text-primary">{call.input_tokens}</span>
+          <span className="text-neutral-700">→</span>
+          <span className="text-primary">{call.output_tokens}</span>
+        </div>
+        <div className="flex gap-4">
+          <span className="text-neutral-600 w-16 shrink-0 text-right">
+            latency
+          </span>
+          <span className="text-neutral-400">{formatDuration(call.latency_ms)}</span>
+        </div>
       </div>
 
       {/* Input */}
       <div>
-        <h4 className="mb-2 text-[13px] font-medium uppercase tracking-[0.2em] text-neutral-500">
-          Input
-        </h4>
-        <div className="rounded-xl border border-white/[0.06] bg-surface p-4 text-sm leading-relaxed text-neutral-300">
+        <div className="font-mono text-[10px] text-neutral-700 uppercase tracking-[0.15em] mb-2">
+          ─── input ───────────────────────
+        </div>
+        <div className="rounded-lg border border-white/[0.04] bg-[#0c0c0c] px-4 py-3 font-mono text-[12px] leading-[1.7] text-neutral-400">
           {call.input_text}
         </div>
       </div>
 
       {/* Output */}
       <div>
-        <h4 className="mb-2 text-[13px] font-medium uppercase tracking-[0.2em] text-neutral-500">
-          Output
-        </h4>
-        <div className="rounded-xl border border-white/[0.06] bg-surface p-4 text-sm leading-relaxed text-neutral-300">
+        <div className="font-mono text-[10px] text-neutral-700 uppercase tracking-[0.15em] mb-2">
+          ─── output ──────────────────────
+        </div>
+        <div className="rounded-lg border border-white/[0.04] bg-[#0c0c0c] px-4 py-3 font-mono text-[12px] leading-[1.7] text-neutral-300">
           {call.output_text}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Tool call detail                                                    */
+/* Turn detail — Tool call                                             */
 /* ------------------------------------------------------------------ */
 
-function ToolDetail({
-  call,
-}: {
-  call: NonNullable<Turn["tool_call"]>;
-}) {
+function ToolDetail({ call }: { call: NonNullable<Turn["tool_call"]> }) {
   const codeStyle: React.CSSProperties = {
     margin: 0,
-    borderRadius: "0.75rem",
-    fontSize: "0.8125rem",
+    borderRadius: "0.5rem",
+    fontSize: "0.75rem",
     lineHeight: 1.6,
-    border: "1px solid rgba(255,255,255,0.06)",
+    border: "1px solid rgba(255,255,255,0.04)",
+    background: "#0c0c0c",
   };
 
   return (
-    <>
-      {/* Status badges — border style */}
-      <div className="flex flex-wrap gap-2">
-        <span className="rounded-md border border-accent/30 px-2.5 py-1 text-xs font-medium text-accent">
-          {call.tool_name}
-        </span>
-        <span
-          className={`rounded-md border px-2.5 py-1 text-xs font-medium ${
-            call.success
-              ? "border-success/30 text-success"
-              : "border-danger/30 text-danger"
-          }`}
-        >
-          {call.success ? "Success" : "Failed"}
-        </span>
-        <span className="rounded-md border border-white/[0.06] px-2.5 py-1 font-mono text-xs text-neutral-500">
-          {call.latency_ms}ms
-        </span>
+    <div className="px-5 py-4 space-y-4 border-t border-white/[0.04] bg-white/[0.01]">
+      {/* Key-value pairs */}
+      <div className="font-mono text-[12px] leading-[2] space-y-0">
+        <div className="flex gap-4">
+          <span className="text-neutral-600 w-16 shrink-0 text-right">
+            tool
+          </span>
+          <span className="text-accent">{call.tool_name}</span>
+        </div>
+        <div className="flex gap-4">
+          <span className="text-neutral-600 w-16 shrink-0 text-right">
+            status
+          </span>
+          <span className={call.success ? "text-success" : "text-danger"}>
+            {call.success ? "ok" : "failed"}
+          </span>
+        </div>
+        <div className="flex gap-4">
+          <span className="text-neutral-600 w-16 shrink-0 text-right">
+            latency
+          </span>
+          <span className="text-neutral-400">
+            {formatDuration(call.latency_ms)}
+          </span>
+        </div>
       </div>
 
       {/* Input JSON */}
       <div>
-        <h4 className="mb-2 text-[13px] font-medium uppercase tracking-[0.2em] text-neutral-500">
-          Tool Input
-        </h4>
+        <div className="font-mono text-[10px] text-neutral-700 uppercase tracking-[0.15em] mb-2">
+          ─── input ───────────────────────
+        </div>
         <SyntaxHighlighter
           language="json"
           style={vscDarkPlus}
@@ -249,66 +247,154 @@ function ToolDetail({
         </SyntaxHighlighter>
       </div>
 
-      {/* Output or Error */}
+      {/* Output / Error */}
       <div>
-        <h4 className="mb-2 text-[13px] font-medium uppercase tracking-[0.2em] text-neutral-500">
-          {call.success ? "Tool Output" : "Error"}
-        </h4>
-        {call.success && call.tool_output ? (
-          <div className="rounded-xl border border-white/[0.06] bg-surface p-4 text-sm leading-relaxed text-success">
-            {call.tool_output}
-          </div>
-        ) : (
-          <div className="rounded-xl border border-danger/20 bg-surface p-4 text-sm leading-relaxed text-danger">
-            {call.error ?? "Unknown error"}
-          </div>
-        )}
+        <div className="font-mono text-[10px] text-neutral-700 uppercase tracking-[0.15em] mb-2">
+          ─── {call.success ? "output" : "error"} ──────────────────────
+        </div>
+        <div
+          className={`rounded-lg border px-4 py-3 font-mono text-[12px] leading-[1.7] ${
+            call.success
+              ? "border-white/[0.04] bg-[#0c0c0c] text-success"
+              : "border-danger/20 bg-[#0c0c0c] text-danger"
+          }`}
+        >
+          {call.success ? call.tool_output : call.error ?? "Unknown error"}
+        </div>
       </div>
-    </>
+    </div>
   );
+}
+
+/* ------------------------------------------------------------------ */
+/* TurnDetail dispatcher                                               */
+/* ------------------------------------------------------------------ */
+
+function TurnDetail({ turn }: { turn: Turn }) {
+  if (turn.turn_type === "llm_call" && turn.llm_call) {
+    return <LlmDetail call={turn.llm_call} />;
+  }
+  if (turn.turn_type === "tool_call" && turn.tool_call) {
+    return <ToolDetail call={turn.tool_call} />;
+  }
+  return null;
 }
 
 /* ------------------------------------------------------------------ */
 /* TraceTimeline                                                       */
 /* ------------------------------------------------------------------ */
 
-export default function TraceTimeline({ turns }: { turns: Turn[] }) {
+export default function TraceTimeline({
+  turns,
+  totalMs,
+}: {
+  turns: Turn[];
+  totalMs: number;
+}) {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const timings = useMemo(() => computeTimings(turns), [turns]);
+
+  // Time ruler ticks (whole seconds within the trace duration)
+  const totalSec = totalMs / 1000;
+  const tickCount = Math.floor(totalSec);
+  const ticks = Array.from({ length: tickCount + 1 }, (_, i) => i);
+
   return (
     <section>
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2, ease }}
-        className="mb-8"
+        className="mb-6"
       >
-        <p className="mb-4 text-[13px] font-medium uppercase tracking-[0.2em] text-primary">
-          Timeline
+        <p className="text-[13px] uppercase tracking-[0.2em] text-accent mb-4">
+          Execution
         </p>
-        <h2 className="font-display text-3xl text-white">
-          Execution Timeline
-        </h2>
+        <h2 className="font-display text-3xl text-white">Waterfall</h2>
       </motion.div>
 
-      <div className="relative space-y-6">
-        {turns.map((turn, i) => (
-          <TurnCard key={turn.turn_id} turn={turn} index={i} />
-        ))}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3, ease }}
+        className="rounded-xl border border-white/[0.06] bg-[#0e0e0e] overflow-hidden"
+      >
+        {/* Terminal chrome */}
+        <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.04] bg-white/[0.01]">
+          <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]/60" />
+          <div className="h-2.5 w-2.5 rounded-full bg-[#febc2e]/60" />
+          <div className="h-2.5 w-2.5 rounded-full bg-[#28c840]/60" />
+          <span className="ml-2 font-mono text-[11px] text-neutral-600">
+            waterfall
+          </span>
+        </div>
 
-        {/* Tail cap */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: turns.length * 0.08 + 0.3, ease }}
-          className="pl-10"
-        >
-          <div className="absolute left-[9px] flex h-4 w-4 items-center justify-center rounded-full border border-white/[0.06] bg-surface">
-            <div className="h-1.5 w-1.5 rounded-full bg-neutral-600" />
+        {/* Column headers + time ruler */}
+        <div className="grid grid-cols-[32px_12px_88px_1fr_60px] items-end gap-2 px-4 pt-2 pb-1.5 border-b border-white/[0.04]">
+          <span className="font-mono text-[10px] text-neutral-700 uppercase text-right">
+            #
+          </span>
+          <span />
+          <span className="font-mono text-[10px] text-neutral-700 uppercase">
+            name
+          </span>
+          {/* Time ruler */}
+          <div className="relative h-4">
+            {ticks.map((t) => (
+              <span
+                key={t}
+                className="absolute bottom-0 font-mono text-[9px] text-neutral-700"
+                style={{
+                  left: `${(t / totalSec) * 100}%`,
+                  transform: t === 0 ? "none" : "translateX(-50%)",
+                }}
+              >
+                {t}s
+              </span>
+            ))}
           </div>
-          <p className="pt-0.5 text-xs text-neutral-600">
-            Trace complete &mdash; {turns.length} turns
-          </p>
-        </motion.div>
-      </div>
+          <span className="font-mono text-[10px] text-neutral-700 uppercase text-right">
+            time
+          </span>
+        </div>
+
+        {/* Waterfall rows */}
+        <div className="divide-y divide-white/[0.02]">
+          {timings.map((timing) => (
+            <div key={timing.turn.turn_id}>
+              <WaterfallRow
+                timing={timing}
+                totalMs={totalMs}
+                isSelected={selectedIndex === timing.index}
+                onSelect={() =>
+                  setSelectedIndex((prev) =>
+                    prev === timing.index ? null : timing.index
+                  )
+                }
+              />
+              <AnimatePresence>
+                {selectedIndex === timing.index && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease }}
+                    className="overflow-hidden"
+                  >
+                    <TurnDetail turn={timing.turn} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div className="px-4 py-2.5 border-t border-white/[0.04] flex items-center justify-between font-mono text-[11px] text-neutral-600">
+          <span>{turns.length} steps · click to inspect</span>
+          <span>{(totalMs / 1000).toFixed(2)}s total</span>
+        </div>
+      </motion.div>
     </section>
   );
 }
