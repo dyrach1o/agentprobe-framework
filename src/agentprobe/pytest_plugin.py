@@ -77,7 +77,7 @@ def _get_xdist_worker_id(config: pytest.Config) -> str | None:
         config: The pytest configuration object.
     """
     if _is_xdist_worker(config):
-        return config.workerinput["workerid"]  # type: ignore[attr-defined]
+        return str(config.workerinput["workerid"])  # type: ignore[attr-defined]
     return None
 
 
